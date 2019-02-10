@@ -1,5 +1,5 @@
-#ifndef AQUAENGINE_UTIL_CLOCK_H
-#define AQUAENGINE_UTIL_CLOCK_H
+#ifndef CLOCK_H
+#define CLOCK_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,21 +11,21 @@ extern "C" {
 #endif
 #include <windows.h>
 #elif defined(__linux__)
-//#include <sys/time.h>
-//#include <unistd.h>
+#include <sys/time.h>
+#include <unistd.h>
 #include <time.h>
 #else
 #include <time.h>
 #endif
 
 typedef struct Clock {
-//	#if defined(_WIN32)
-//	__int64 start;
-//	#elif defined(__linux__)
-//	struct timespec start;
-//	#else
+	#if defined(_WIN32)
+	__int64 start;
+	#elif defined(__linux__)
+	long start;
+	#else
 	clock_t start;
-//	#endif
+	#endif
 	double DeltaTime;
 } Clock;
 

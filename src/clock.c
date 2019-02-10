@@ -1,5 +1,7 @@
 #include <clock.h>
 
+#include <stdio.h>
+
 #if defined(_WIN32)
 
 static double clock_frequency = 0.0;
@@ -32,8 +34,15 @@ void Clock_Delay(unsigned int ms)
 	Sleep(ms);
 }
 
-//#elif defined(__linux__)
-/*
+#elif defined(__linux__)
+
+static long gettime(void)
+{
+	struct timespec ts;
+	timespec_get(&ts, TIME_UTC);
+	return (long)ts.tv_sec * 1000000000L + ts.tv_nsec;
+}
+
 void Clock_Initialize(Clock* active_clock)
 {
 	active_clock->DeltaTime = 0.0; 
@@ -41,16 +50,14 @@ void Clock_Initialize(Clock* active_clock)
 
 void Clock_TickBegin(Clock* active_clock)
 {
-	gettimeofday(&active_clock->start, NULL);
+	active_clock->start = gettime();
 }
 
 void Clock_TickEnd(Clock* active_clock)
 {
-	struct timeval end;
-	gettimeofday(&end, NULL);
-
-	active_clock->DeltaTime = (double)((end.tv_sec - active_clock->start.tv_sec) * 1000 + (end.tv_usec - active_clock->start.tv_usec) / 1000);
-	active_clock->DeltaTime *= 0.001;
+	long end = gettime();
+	active_clock->DeltaTime = (double)(end - active_clock->start) * 0.000000001; 
+	printf("%f\n", active_clock->DeltaTime);
 }
 
 void Clock_Delay(unsigned int ms)
@@ -65,7 +72,7 @@ void Clock_Delay(unsigned int ms)
 
 	nanosleep(&tv, &elapsed);
 }
-*/
+
 
 #else
 void Clock_Initialize(Clock* active_clock)
