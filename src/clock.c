@@ -1,7 +1,5 @@
 #include <clock.h>
 
-#include <stdio.h>
-
 #if defined(_WIN32)
 
 static double clock_frequency = 0.0;
@@ -57,7 +55,6 @@ void Clock_TickEnd(Clock* active_clock)
 {
 	long end = gettime();
 	active_clock->DeltaTime = (double)(end - active_clock->start) * 0.000000001; 
-	printf("%f\n", active_clock->DeltaTime);
 }
 
 void Clock_Delay(unsigned int ms)
