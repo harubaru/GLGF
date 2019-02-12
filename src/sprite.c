@@ -59,7 +59,6 @@ void sprite_draw(GLuint texture, GLuint shader, vec2 position, vec2 size)
 	texture_bind(texture, 0);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "Model"), 1, GL_FALSE, *M);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "Projection"), 1, GL_FALSE, *projection);
-	glUniform1i(glGetUniformLocation(shader, "use_spritesheet"), 0);
 
 	glBindVertexArray(m_VertexArrayObject);
 	glEnableVertexAttribArray(0);
