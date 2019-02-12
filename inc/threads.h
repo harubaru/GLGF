@@ -12,7 +12,7 @@ typedef struct mutex {
 	pthread_mutexattr_t attr;
 } mutex_t;
 
-mutex_t mutex_init();
+int mutex_init(mutex_t *m);
 int mutex_lock(mutex_t mutex);
 int mutex_trylock(mutex_t mutex);
 int mutex_unlock(mutex_t mutex);

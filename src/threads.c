@@ -3,12 +3,22 @@
 
 #include <threads.h>
 
-mutex_t mutex_init()
+int mutex_init(mutex_t *m)
 {
-	mutex_t ret;
-	pthread_mutexattr_init(&ret.attr);
-	pthread_mutex_init(&ret.handle, &ret.attr);
-	return ret;
+	if (m) {
+		if (pthread_mutexattr_init(&m->attr) != 0) {
+			fprintf(stderr, "Failed to create mutexattr!\n");
+			return -1;
+		}
+		if (pthread_mutex_init(&m->handle, &m->attr) != 0) {
+			fprintf(stderr, "Failed to create mutex!\n");
+			return -1;
+		}
+	} else {
+		return -1;
+	}
+
+	return 1;
 }
 
 int mutex_lock(mutex_t mutex)
