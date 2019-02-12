@@ -5,6 +5,5 @@
 
 void graphics_init(void);
 void graphics_clear(void);
-void graphics_kill(void);
 
 #endif

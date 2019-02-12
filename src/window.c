@@ -3,15 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static mutex_t mtx;
 static SDL_Window *window = NULL;
 static SDL_GLContext glcontext;
 static SDL_GLContext glinitcontext;
 
 void window_init(char *title, int size_x, int size_y)
 {
-	mtx = mutex_init();
-
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
@@ -61,8 +58,6 @@ void window_destroy(void)
 
 	SDL_GL_DeleteContext(glcontext);
 	SDL_GL_DeleteContext(glinitcontext);
-
-	mutex_destroy(mtx);
 }
 
 SDL_Window *get_window(void)

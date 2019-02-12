@@ -27,8 +27,3 @@ void graphics_clear(void)
 	glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
-
-void graphics_kill(void)
-{
-
-}
