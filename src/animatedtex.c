@@ -1,15 +1,5 @@
 #include <animatedtex.h>
 
-/*
-typedef struct animatedtex {
-	GLuint *id;	// frames
-	GLuint cur_id;	// current frame to render
-	float next;	// time to next frame
-	float freq;	// frequency of frame switching
-	size_t amount;	// amount of frames
-} animatedtex_t;
-*/
-
 animatedtex_t *animatedtex_init(char **filenames, size_t amount, float freq)
 {
 	animatedtex_t *tex = malloc(sizeof(animatedtex_t));
