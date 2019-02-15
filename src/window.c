@@ -28,7 +28,7 @@ void window_init(char *title, int size_x, int size_y)
 		SDL_WINDOWPOS_UNDEFINED,
 		size_x,
 		size_y,
-		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+		SDL_WINDOW_OPENGL
 	);
 
 	glcontext = SDL_GL_CreateContext(window);
