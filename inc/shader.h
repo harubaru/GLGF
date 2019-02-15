@@ -20,5 +20,6 @@ void shader_binary_save(GLuint program, char *binpath);
 GLuint shader_binary_load(char *binpath);
 void shader_bind(GLuint shader);
 void shader_destroy(GLuint shader);
+void shader_release(void);
 
 #endif

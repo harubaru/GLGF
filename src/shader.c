@@ -180,3 +180,8 @@ void shader_destroy(GLuint shader)
 {
 	glDeleteProgram(shader);
 }
+
+void shader_release(void)
+{
+	glReleaseShaderCompiler();
+}
