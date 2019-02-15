@@ -3,30 +3,33 @@
 #include <audio.h>
 
 static size_t music_count = 0;
-static Mix_Music **music;
+static FMOD_SOUND **music;
 
 static size_t chunk_count = 0;
-static Mix_Chunk **chunk;
+static FMOD_SOUND **chunk;
+
+FMOD_SYSTEM *fmodsystem;
+FMOD_CHANNELGROUP *music_channelgroup;
+FMOD_CHANNELGROUP *chunk_channelgroup;
+
+#define ASSERT_FMOD(C, M) \
+if (C != FMOD_OK) { fprintf(stderr, "audio: %s\n", M); fflush(stderr); return; }
 
 void audio_init(void)
 {
-	if(Mix_OpenAudio(48000, AUDIO_F32SYS, 2, 2048)) {
-		fprintf(stderr, "%s\n", SDL_GetError());
-		return;
-	}
-
-	if (Mix_AllocateChannels(2))
-		fprintf(stderr, "%s\n", SDL_GetError());
+	ASSERT_FMOD(FMOD_System_Create(&fmodsystem), "failed to create fmod system")
+	ASSERT_FMOD(FMOD_System_Init(fmodsystem, 32, FMOD_INIT_NORMAL, NULL), "failed to init fmod system")
 }
 
 void audio_load_music(char **files, size_t count)
 {
 	music_count = count;
-	music = calloc(count, sizeof(Mix_Music *));
+	music = calloc(count, sizeof(FMOD_SOUND *));
+
+	FMOD_System_CreateChannelGroup(fmodsystem, "music_channelgroup", &music_channelgroup);
 
 	for (size_t i = 0; i < count; i++) {
-		music[i] = Mix_LoadMUS(files[i]);
-		if (!music[i])
+		if (FMOD_OK != FMOD_System_CreateSound(fmodsystem, files[i], FMOD_DEFAULT, NULL, &music[i]))
 			fprintf(stderr, "Failed to load audio - %s\n", files[i]);
 	}
 }
@@ -34,29 +37,35 @@ void audio_load_music(char **files, size_t count)
 void audio_load_chunk(char **files, size_t count)
 {
 	chunk_count = count;
-	chunk = calloc(count, sizeof(Mix_Chunk *));
+	chunk = calloc(count, sizeof(FMOD_SOUND *));
+
+	FMOD_System_CreateChannelGroup(fmodsystem, "chunk_channelgroup", &chunk_channelgroup);
 
 	for (size_t i = 0; i < count; i++) {
-		chunk[i] = Mix_LoadWAV(files[i]);
-		if (!chunk[i])
+		if (FMOD_OK != FMOD_System_CreateSound(fmodsystem, files[i], FMOD_DEFAULT, NULL, &chunk[i]))
 			fprintf(stderr, "Failed to load audio - %s\n", files[i]);
 	}
 }
 
-void audio_playmusic(size_t i, int loops)
+void audio_playmusic(size_t i)
 {
 	if (i > music_count)
 		return;
 
-	Mix_PlayMusic(music[i], loops);
+	ASSERT_FMOD(FMOD_System_PlaySound(fmodsystem, music[i], music_channelgroup, 0, NULL), "failed to play music")
 }
 
-void audio_playchunk(size_t i, int loops)
+void audio_playchunk(size_t i)
 {
 	if (i > chunk_count)
 		return;
 
-	Mix_PlayChannel(-1, chunk[i], loops);
+	ASSERT_FMOD(FMOD_System_PlaySound(fmodsystem, chunk[i], chunk_channelgroup, 0, NULL), "failed to play chunk")
+}
+
+void audio_update(void)
+{
+	ASSERT_FMOD(FMOD_System_Update(fmodsystem), "failed to update fmod system")
 }
 
 void audio_kill(void)
@@ -64,9 +73,13 @@ void audio_kill(void)
 	size_t i;
 
 	for (i = 0; i < music_count; i++)
-		Mix_FreeMusic(music[i]);
+		FMOD_Sound_Release(music[i]);
 	for (i = 0; i < chunk_count; i++)
-		Mix_FreeChunk(chunk[i]);
+		FMOD_Sound_Release(chunk[i]);
 
-	Mix_CloseAudio();
+	FMOD_ChannelGroup_Release(chunk_channelgroup);
+	FMOD_ChannelGroup_Release(music_channelgroup);
+
+	FMOD_System_Close(fmodsystem);
+	FMOD_System_Release(fmodsystem);
 }
