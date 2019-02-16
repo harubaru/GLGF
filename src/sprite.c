@@ -56,7 +56,10 @@ void sprite_draw(GLuint texture, GLuint shader, vec2 position, vec2 size)
 	mat4x4_scale_aniso(M, M, size[0], size[1], 1.0f);
 
 	shader_bind(shader);
-	texture_bind(texture, 0);
+
+	if (texture)
+		texture_bind(texture, 0);
+
 	glUniformMatrix4fv(glGetUniformLocation(shader, "Model"), 1, GL_FALSE, *M);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "Projection"), 1, GL_FALSE, *projection);
 
