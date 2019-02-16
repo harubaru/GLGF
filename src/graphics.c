@@ -24,6 +24,6 @@ void graphics_clear(void)
 	SDL_GL_SetSwapInterval(1);
 	SDL_GetWindowSize(get_window(), &w, &h);
 	glViewport(0, 0, w, h);
-	glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
