@@ -69,3 +69,28 @@ void sprite_draw(GLuint texture, GLuint shader, vec2 position, vec2 size)
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
 }
+
+void sprite_draw_multitextured(GLuint texture1, GLuint texture2, GLuint shader, vec2 position, vec2 size)
+{
+	mat4x4 M;
+	mat4x4_identity(M);
+
+	mat4x4_translate(M, position[0], position[1], 0.0f);
+	mat4x4_scale_aniso(M, M, size[0], size[1], 1.0f);
+
+	shader_bind(shader);
+
+	if ((texture1) && (texture2)) {
+		texture_bind(texture1, 0);
+		texture_bind(texture2, 1);
+	}
+
+	glUniformMatrix4fv(glGetUniformLocation(shader, "Model"), 1, GL_FALSE, *M);
+	glUniformMatrix4fv(glGetUniformLocation(shader, "Projection"), 1, GL_FALSE, *projection);
+
+	glBindVertexArray(m_VertexArrayObject);
+	glEnableVertexAttribArray(0);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(0);
+	glBindVertexArray(0);
+}
