@@ -34,6 +34,7 @@ typedef struct map {
 
 map_t *map_parse(char *filename);
 void map_write(char *filename, map_t *map);
+void map_sort_z_index(map_t *map);
 void map_destroy(map_t *map);
 
 #endif
