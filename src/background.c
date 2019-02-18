@@ -13,13 +13,10 @@ void background_draw(GLuint shader, vec2 offset, float parallaxfactor, vec2 size
 	glUseProgram(shader);
 	glUniform1i(glGetUniformLocation(shader, "parallaxbg"), 1);
 	glUniform2f(glGetUniformLocation(shader, "parallaxoffset"), offset[0] * parallaxfactor, offset[1] * parallaxfactor);
-	glUseProgram(0);
 
 	sprite_draw(bg_tex, shader, pos, size);
 
-	glUseProgram(shader);
 	glUniform1i(glGetUniformLocation(shader, "parallaxbg"), 0);
-	glUseProgram(0);
 }
 
 void background_destroy(void)
