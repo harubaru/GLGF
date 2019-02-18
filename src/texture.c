@@ -2,6 +2,8 @@
 
 GLuint texture_create(const char *filepath)
 {
+	stbi_set_flip_vertically_on_load(1);
+
 	GLuint id = 0;
 	GLenum iformat = 0, format = 0;
 	int width, height, components;
