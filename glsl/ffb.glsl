@@ -7,6 +7,7 @@ in VS_OUT {
 } fs_in;
 
 uniform sampler2D image;
+uniform sampler2D image2;
 
 vec4 none(void)
 {
@@ -45,7 +46,13 @@ vec4 sobel(void)
 	return sobel;
 }
 
+vec4 bloom()
+{
+	vec3 hdrbloom = texture(image, fs_in.TexCoord).rgb + texture(image2, fs_in.TexCoord).rgb;
+	return vec4(hdrbloom, 1.0);
+}
+
 void main()
 {
-	Fragment = none();
+	Fragment = bloom();
 }
