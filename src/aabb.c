@@ -31,33 +31,34 @@ _Bool aabb_quad_intersect(vec2 bp1, vec2 bs1, vec2 bp2, vec2 bs2)
 float aabb_ray_distance(vec2 rp, vec2 rd, vec2 bp, vec2 bs)
 {
 	vec2 min, max;
+	vec4 m;
 
 	for(int i = 0; i < 2; i++) {
 		min[i] = bp[i];
 		max[i] = bp[i] + bs[i];
 	}
 
-	float lo = -INFINITY;
-	float hi = INFINITY;
+	m[0] = -INFINITY;
+	m[1] = INFINITY;
 
 	for (int i = 0; i < 2; i++) {
-		float dimlo = (min[i] - rp[i]) / rd[i];
-		float dimhi = (max[i] - rp[i]) / rd[i];
+		m[2] = (min[i] - rp[i]) / rd[i];
+		m[3] = (max[i] - rp[i]) / rd[i];
 
-		if (dimlo > dimhi) {
-			float tmp = dimlo;
-			dimlo = dimhi;
-			dimhi = tmp;
+		if (m[2] > m[3]) {
+			float tmp = m[2];
+			m[2] = m[3];
+			m[3] = tmp;
 		}
 
-		if ((dimhi < lo) || (dimlo > hi))
+		if ((m[3] < m[0]) || (m[2] > m[1]))
 			return INFINITY;
 
-		if (dimlo > lo) lo = dimlo;
-		if (dimhi < hi) hi = dimhi;
+		if (m[2] > m[0]) m[0] = m[2];
+		if (m[3] < m[1]) m[1] = m[3];
 	}
 
-	return (lo > hi) ? INFINITY : lo;
+	return (m[0] > m[1]) ? INFINITY : m[0];
 }
 
 _Bool aabb_ray_intersect(float *distance, vec2 rp, vec2 rd, vec2 bp, vec2 bs)
