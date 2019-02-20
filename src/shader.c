@@ -1,5 +1,7 @@
 #include <shader.h>
 
+static _Bool usecache = 0;
+
 static char *read_file(char *filepath)
 {
 	FILE *fp = fopen(filepath, "r");
@@ -103,9 +105,17 @@ static int shader_binary_exists(char *binpath)
 	return 0;
 }
 
+void shader_use_cache(_Bool state)
+{
+	if (!state)
+		usecache = 0;
+	else
+		usecache = 1;
+}
+
 int shader_binary_cache(char *binpath, char *vertpath, char *fragpath)
 {
-	if (shader_binary_exists(binpath)) {
+	if (shader_binary_exists(binpath) && usecache) {
 		return shader_binary_load(binpath);
 	}
 
