@@ -12,6 +12,7 @@ typedef struct light {
 	vec2 normal;
 	vec2 size;
 	vec3 color;
+	GLuint shadowmap;
 } light_t;
 
 light_t light_create(vec2 position, vec2 size, vec3 color);
@@ -24,6 +25,7 @@ void light_remove(light_t *light);
 void light_fetch(light_t *light);
 void light_reset_queue();
 size_t light_get_count();
+void light_shadowmap_copy(light_t light, GLuint shadowmap);
 void light_scene_draw_offset(light_t light, vec2 offset);
 void light_unbind(void);
 

@@ -28,6 +28,17 @@ light_t light_create(vec2 position, vec2 size, vec3 color)
 	for (int i = 0; i < 2; i++)
 		ret.normal[i] = (size[i] / 2);
 
+	glGenTextures(1, &ret.shadowmap);
+	glBindTexture(GL_TEXTURE_2D, ret.shadowmap);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);  
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	return ret;
 }
 
@@ -117,6 +128,14 @@ void light_reset_queue()
 size_t light_get_count()
 {
 	return lightcount;
+}
+
+void light_shadowmap_copy(light_t light, GLuint shadowmap)
+{
+	if (!glIsTexture(shadowmap))
+		return;
+
+	glCopyImageSubData(shadowmap, GL_TEXTURE_2D, 0, 0, 0, 0, light.shadowmap, GL_TEXTURE_2D, 0, 0, 0, 0, width, height, 1);
 }
 
 void light_bind(void)
