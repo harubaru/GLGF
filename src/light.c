@@ -3,6 +3,15 @@
 static int width, height;
 static GLuint shader;
 
+typedef struct node {
+	struct node *next;
+	light_t *light;
+	_Bool needsdrawn;
+} node_t;
+
+static node_t *lights = NULL; // head
+static size_t lightcount = 0;
+
 light_t light_create(vec2 position, vec2 size, vec3 color)
 {
 	light_t ret;
@@ -29,15 +38,97 @@ void light_init(int w, int h)
 	shader = shader_binary_cache("./shaders/cached/light.glsp", "./shaders/vdbg.glsl", "./shaders/flight.glsl");
 }
 
+void light_add(light_t *light)
+{
+	lightcount++;
+
+	if (!lights) {
+		lights = calloc(1, sizeof(node_t));
+		lights->next = NULL;
+		lights->light = light;
+		lights->needsdrawn = 1;
+
+		return;
+	}
+	
+	node_t *newlight = calloc(1, sizeof(node_t));
+	newlight->next = lights;
+	newlight->light = light;
+	lights = newlight;
+	lights->needsdrawn = 1;
+}
+
+void light_remove(light_t *light)
+{
+	if (!lights)
+		return;
+	
+	node_t *curr = lights;
+	node_t *prev = NULL;
+
+	while (curr != NULL) {
+		if (curr->light == light) {
+			if (prev) {
+				prev->next = curr->next;
+			}
+			lightcount--;
+			free(curr);
+			break;
+		}
+		prev = curr;
+		curr = curr->next;
+	}
+}
+
+void light_fetch(light_t *light)
+{
+	if (!lights)
+		return;
+	
+	node_t *curr = lights;
+
+	while (curr != NULL) {
+		if (curr->needsdrawn == 1) {
+			*light = *curr->light;
+			curr->needsdrawn = 0;
+			break;
+		}
+
+		curr = curr->next;	
+	}
+}
+
+void light_reset_queue()
+{
+	if (!lights)
+		return;
+	
+	node_t *curr = lights;
+
+	while (curr != NULL) {
+		if (curr->needsdrawn == 0) {
+			curr->needsdrawn = 1;
+		}
+
+		curr = curr->next;
+	}
+}
+
+size_t light_get_count()
+{
+	return lightcount;
+}
+
 void light_bind(void)
 {
 	shader_bind(shader);
 }
 
-void light_draw(light_t light)
+void light_draw(light_t light, vec2 pwo)
 {
 	glUniform3f(glGetUniformLocation(shader, "color"), light.color[0], light.color[1], light.color[2]);
-	sprite_draw(0, shader, light.position, light.size);
+	vec2 tilepos = { light.position[0] + pwo[0], light.position[1] + pwo[1] };
+	sprite_draw(0, shader, tilepos, light.size);
 }
 
 void light_draw_centered(light_t light)
