@@ -14,6 +14,7 @@ typedef struct meta {
 	uint32_t identifier;
 	uint32_t version;
 	uint32_t numtiles;
+	uint32_t numlights;
 	uint32_t properties;
 } meta_t;
 
@@ -27,9 +28,22 @@ typedef struct tile {
 	uint16_t h;
 } tile_t;
 
+typedef struct light_tile {
+	uint8_t z_order;
+	uint8_t properties;
+	uint32_t x;
+	uint32_t y;
+	uint16_t w;
+	uint16_t h;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+} light_tile_t;
+
 typedef struct map {
 	meta_t metadata;
 	tile_t *tiles;
+	light_tile_t *lights;
 } map_t;
 
 map_t *map_parse(char *filename);
