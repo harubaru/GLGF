@@ -59,6 +59,8 @@ void sprite_draw(GLuint texture, GLuint shader, vec2 position, vec2 size)
 
 	if (texture)
 		texture_bind(texture, 0);
+	else
+		texture_bind(0, 0);
 
 	glUniformMatrix4fv(glGetUniformLocation(shader, "Model"), 1, GL_FALSE, *M);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "Projection"), 1, GL_FALSE, *projection);
