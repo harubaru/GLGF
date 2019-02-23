@@ -3,7 +3,7 @@
 #include <string.h>
 #include <texturemanager.h>
 
-#define TEX_LIMIT 0xFF
+#define TEX_LIMIT 0xFFFF
 
 GLuint *texid_entries;
 static size_t i = 0;
