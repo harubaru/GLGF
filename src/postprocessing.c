@@ -2,7 +2,7 @@
 
 static int width = 0, height = 0;
 static GLuint fbo;
-static GLuint tex[3];
+static GLuint tex[2];
 static GLuint shader = 0;
 
 static GLuint gblur_fbo[2];
@@ -34,11 +34,11 @@ void postprocessing_init(int w, int h)
 	height = h;
 
 	glGenFramebuffers(1, &fbo);
-	glGenTextures(3, tex);
+	glGenTextures(2, tex);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 2; i++) {
 		glBindTexture(GL_TEXTURE_2D, tex[i]);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
@@ -50,8 +50,8 @@ void postprocessing_init(int w, int h)
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, tex[i], 0);
 	}
 
-	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glDrawBuffers(3, attachments);
+	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, attachments);
 
 	shader = shader_binary_cache("./shaders/cached/fb.glsp", "./shaders/vfb.glsl", "./shaders/ffb.glsl");
 	gblur_shader = shader_binary_cache("./shaders/cached/gblur.glsp", "./shaders/vfb.glsl", "./shaders/fgblur.glsl");
@@ -64,7 +64,7 @@ void postprocessing_init(int w, int h)
 
 void postprocessing_kill(void)
 {
-	glDeleteTextures(3, tex);
+	glDeleteTextures(2, tex);
 	glDeleteFramebuffers(1, &fbo);
 }
 
@@ -76,15 +76,6 @@ void postprocessing_capture(int enable)
 	} else {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-}
-
-GLuint postprocessing_get_lightoccluders(void)
-{
-	if (glIsTexture(tex[2])) {
-		return tex[2];
-	}
-
-	return 0;
 }
 
 void postprocessing_draw(void)
