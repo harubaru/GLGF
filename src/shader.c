@@ -120,7 +120,9 @@ int shader_binary_cache(char *binpath, char *vertpath, char *fragpath)
 	}
 
 	GLuint sp = shader_load(vertpath, fragpath);
-	shader_binary_save(sp, binpath);
+	
+	if (usecache)
+		shader_binary_save(sp, binpath);
 
 	return sp;
 }
