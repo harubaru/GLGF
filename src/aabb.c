@@ -1,5 +1,17 @@
 #include <aabb.h>
 
+aabb_t aabb_gen_quad(vec2 bp, vec2 bs)
+{
+	aabb_t aabb;
+
+	for (int i = 0; i < 2; i++) {
+		aabb.min[i] = bp[i];
+		aabb.max[i] = bp[i] + bs[i];
+	}
+
+	return aabb;
+}
+
 _Bool aabb_point_intersect(vec2 point, vec2 bp, vec2 bs)
 {
 	vec2 min, max;
