@@ -92,7 +92,7 @@ void physics_body_compute(phys_body_t *a, phys_body_t *b, float deltatime)
 	vec2 force;
 
 	force[0] = 0;
-	force[1] = -9.8;
+	force[1] = GRAVITY;
 
 	if (aabb_quad_intersect(a->aabb, b->aabb))
 		force[1] = 0;
