@@ -35,11 +35,17 @@ GLuint texture_create(const char *filepath)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	if (glIsTexture(id) == GL_FALSE)
+		return 0;
+	
 	return id;
 }
 
 void texture_bind(GLuint id, GLuint unit)
 {
+	if ((glIsTexture(id) == GL_FALSE) || (unit > GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS))
+		return;
+	
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, id);
 }
