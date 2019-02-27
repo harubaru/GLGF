@@ -1,1 +1,0 @@
-OBJS := $(patsubst %.c, %.o, $(shell find . -name '*.c'))
