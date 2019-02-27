@@ -16,7 +16,6 @@ void graphics_init(void)
 		abort();
 		break;
 	case GL3W_ERROR_OPENGL_VERSION:
-		printf("%s\n", glGetString(GL_VENDOR));
 		fprintf(stderr, "OpenGL Version 3.3 or higher is required to run this program!\n");
 		abort();
 		break;
