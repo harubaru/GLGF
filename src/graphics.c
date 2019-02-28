@@ -4,12 +4,23 @@
 
 void graphics_init(void)
 {
-	int ret = gl3wInit();
-
-	switch(ret) {
+	switch(gl3wInit()) {
 	case GL3W_OK:
 		break;
+	case GL3W_ERROR_INIT:
+		fprintf(stderr, "Failed to detect OpenGL version!\n");
+		abort();
+		break;
+	case GL3W_ERROR_LIBRARY_OPEN:
+		fprintf(stderr, "Failed to detect OpenGL library!\n");
+		abort();
+		break;
+	case GL3W_ERROR_OPENGL_VERSION:
+		fprintf(stderr, "OpenGL Version 3.3 or higher is required to run this program!\n");
+		abort();
+		break;
 	default:
+		fprintf(stderr, "Failed to load OpenGL!\n");
 		break;
 	}
 

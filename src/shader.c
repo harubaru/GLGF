@@ -33,7 +33,7 @@ static GLuint compile_shader(const char *source, GLuint type)
 	GLuint s = glCreateShader(type);
 
 	if (!glIsShader(s)) {
-		fprintf(stderr, "wrong shader type\n");
+		fprintf(stderr, "wrong shader type: %u\n", s);
 		return 0;
 	}
 
@@ -47,6 +47,7 @@ static GLuint compile_shader(const char *source, GLuint type)
 		glGetShaderInfoLog(s, len, NULL, log);
 		fprintf(stderr, "%s", log);
 		free(log);
+		return 0;
 	}
 
 	return s;
@@ -82,6 +83,11 @@ GLuint shader_load(char *vertpath, char *fragpath)
 
 	vshader = compile_shader(vsrc, GL_VERTEX_SHADER);
 	fshader = compile_shader(fsrc, GL_FRAGMENT_SHADER);
+
+	if ((!vshader) || (!fshader)) {
+		fprintf(stderr, "Failed to load shader!\n");
+		return 0;
+	}
 	
 	shader = link_shaders(vshader, fshader);
 
