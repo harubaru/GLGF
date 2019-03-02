@@ -20,5 +20,6 @@
 #include <light.h>
 #include <background.h>
 #include <physics.h>
+#include <sampler.h>
 
 #endif
